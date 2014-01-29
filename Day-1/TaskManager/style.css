@@ -1,0 +1,28 @@
+h1{
+	border-top : 2px solid blue;
+	border-bottom : 2px solid blue;
+	background-color: lightblue;
+	padding-top: 20px;
+	padding-bottom: 20px;
+}
+
+#ulTaskList{
+	width: 300px;
+}
+
+#ulTaskList li{
+	list-style: none;
+	border : 1px solid black;
+	background-color: #efefef;
+	padding: 5px;
+	margin-top: 5px;
+	border-radius: 4px;
+	cursor: pointer;
+}
+
+#ulTaskList li.completed{
+	border : 2px solid red;
+	background-color: lightpink;
+	font-style: italic;
+	text-decoration: line-through;
+}
