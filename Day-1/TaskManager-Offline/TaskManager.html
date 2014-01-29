@@ -1,14 +1,15 @@
 <!doctype html>
-<html lang="en">
+<html lang="en" manifest="app.manifest">
 <head>
 	<meta charset="UTF-8">
 	<title>Task Manager</title>
 	<link rel="stylesheet" href="style.css">
-	<script src="TaskStorage.js"></script>
+	<link rel="stylesheet" href="style-online.css">
+	<script src="TaskStorage-Ajax.js"></script>
 	<script src="TaskManager.js"></script>
 </head>
 <body>
-	<h1>Task Manager (Storage)</h1>
+	<h1>Task Manager (Storage) Ver - 1.3</h1>
 	<span>Task :</span>
 	<input type="text" name="" id="txtTask">
 	<input type="button" value="Add Task" id="btnAddTask">
@@ -16,5 +17,12 @@
 	<ul id="ulTaskList">
 		
 	</ul>
+	<div id="divOfflineStatus">
+		Offline*
+	</div>
+	<div id="divUpdateReady">
+		A new version of the application is available. Do you want to use it?
+		<input type="button" value="  Yes  " id="btnUseUpdate"><input type="button" value="  No  " id="btnDontUseUpdate">
+	</div>
 </body>
 </html>

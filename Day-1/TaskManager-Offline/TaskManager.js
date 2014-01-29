@@ -1,12 +1,26 @@
 (function(){
 	window.addEventListener("DOMContentLoaded",init);
+
+	window.applicationCache.addEventListener("updateready",onUpdateReadyTrigger);
+	function onUpdateReadyTrigger(){
+		document.getElementById("divUpdateReady").style.display = "block";
+	}
+	
 	var btnAddTask
 		, btnRemoveCompleted
 		, txtTask
 		, ulTaskList
+		, btnUseUpdate
+		, btnDontUseUpdate
 		, storage = taskStorage();
 
 	function init(){
+		btnUseUpdate = document.getElementById("btnUseUpdate");
+		btnUseUpdate.addEventListener("click", onBtnUseUpdateClick);
+
+		btnDontUseUpdate = document.getElementById("btnDontUseUpdate");
+		btnDontUseUpdate.addEventListener("click", onBtnDontUseUpdateClick);
+
 		ulTaskList = document.getElementById("ulTaskList");
 		txtTask = document.getElementById("txtTask");
 		btnAddTask = document.getElementById("btnAddTask");
@@ -14,8 +28,20 @@
 		btnAddTask.addEventListener("click",onBtnAddTaskClicked);
 		btnRemoveCompleted.addEventListener("click",onBtnAddRemoveCompletedClicked);
 		loadTasksFromStorage();
+		
+		document.getElementById("divUpdateReady").style.display = "none";
+
 		window.addEventListener("storage",onStorageTriggered);
 	}
+
+	function onBtnUseUpdateClick(){
+		window.location.reload();
+	}
+
+	function onBtnDontUseUpdateClick(){
+		document.getElementById("divUpdateReady").style.display = "none";
+	}
+
 
 	function onStorageTriggered(storageEvent){
 		loadTasksFromStorage();
