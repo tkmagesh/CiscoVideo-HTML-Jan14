@@ -1,0 +1,58 @@
+<!doctype html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<title>Prime Counter</title>
+	<script>
+	window.addEventListener("DOMContentLoaded",init);
+	var txtStart, txtEnd, divMessage, progress,worker;
+	function init(){
+		worker = new Worker("PrimeFinder.js");
+		worker.addEventListener("message", onWorkerMessage);
+
+		txtStart = document.getElementById("txtStart");
+		txtEnd = document.getElementById("txtEnd");
+		progress = document.getElementById("progress");
+		divMessage = document.getElementById("divMessage");
+
+		document.getElementById("btnCountPrimes").addEventListener("click",btnCountPrimesClick);
+	}
+	function onWorkerMessage(msgArg){
+		var res = msgArg.data;
+		switch (res.type){
+			case "progress":
+				progress.value = res.percentCompleted * 5;
+				divMessage.innerHTML = res.primeCount + " prime numbers are found";
+				break;
+			case "completed":
+				progress.value = 100;
+				divMessage.innerHTML = res.primeCount + " prime numbers are found between " + res.start + " and " + res.end;
+				break;
+			default :
+				console.warning("unknown message type", msgArg);
+		}
+	}
+	function btnCountPrimesClick(){
+		var start = parseInt(txtStart.value),
+			end = parseInt(txtEnd.value),
+			request = {
+				type : "findPrimes",
+				start : start,
+				end : end
+			};
+			worker.postMessage(request);
+
+
+	}
+	</script>
+</head>
+<body>
+	<span>Start :</span>
+	<input type="text" name="" id="txtStart">
+	<span>End :</span>
+	<input type="text" name="" id="txtEnd">
+	<input type="button" value="Count Primes" id="btnCountPrimes">
+	<div id="divMessage"></div>
+	<progress id="progress" min="0" max="100" value="0"></progress>
+</body>
+</html>
