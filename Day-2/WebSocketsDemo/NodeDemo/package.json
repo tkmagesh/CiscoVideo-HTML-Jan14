@@ -1,0 +1,14 @@
+{
+  "name": "NodeDemo",
+  "version": "0.1.0",
+  "description": "node demo",
+  "main": "calculatorApp.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "Magesh K",
+  "license": "BSD-2-Clause",
+  "dependencies": {
+    "async": "~0.2.10"
+  }
+}
