@@ -1,0 +1,67 @@
+<!doctype html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<title>Greeting App - Backbone</title>
+	<script src="underscore.js"></script>
+	<script src="jquery.js"></script>
+	<script src="backbone.js"></script>
+	<script>
+	var GreetModel = Backbone.Model.extend({
+		defaults :{
+			"firstName" :"",
+			"lastName" : "",
+			"msg" : ""
+		},
+		greet : function(){
+			this.set('msg',"Hi " + this.firstName + " " + this.lastName);
+		}
+	});
+
+	var GreetView = Backbone.View.extend({
+		id : "#divGreet",
+		initialize : function(){
+
+			this.listenTo(this.model,'change',this.syncModel);
+			_.bindAll(this,"syncModel");
+			this.$el = $("#divGreet");
+		},
+		events : {
+			'input change' : "updateModel",
+			'#btnGreet click' : "triggerGreet"
+		},
+		updateModel : function(){
+			this.model.set('firstName',this.$("#txtFirstName").val());
+			this.model.set('lastName',this.$("#txtLastName").val());
+		},
+		triggerGreet : function(){
+			console.log('triggerGreet triggred');
+			this.model.greet();
+		},
+		syncModel : function(){
+			this.$("#txtFirstName").val(this.model.get('firstName'));
+			this.$("#txtLastName").val(this.model.get('lastName'));
+			this.$("#divMessage").val(this.model.get('msg'));
+		}
+	});
+	$(function(){
+		window.greetModel = new GreetModel();
+		window.greetView = new GreetView({
+			model : window.greetModel
+		});
+	});
+	</script>
+</head>
+<body>
+	<div id="divGreet" class="content">
+		<span>First Name:</span>
+			<input type="text" name="" id="txtFirstName">
+			<br>
+			<span>Last Name:</span>
+			<input type="text" name="" id="txtLastName">
+			<br>
+			<input type="button" value="Greet" id="btnGreet">
+			<div id="divMessage"></div>	
+	</div>
+</body>
+</html>

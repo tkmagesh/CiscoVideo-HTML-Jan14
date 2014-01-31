@@ -1,0 +1,160 @@
+<!doctype html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<title>Salary Calculator</title>
+	<style>
+	label{
+		display : block;
+	}
+	.content{
+		width: 400px;
+	}
+	#divResult{
+		font-size: 28pt;
+		color : red;
+	}
+	</style>
+
+	<script>
+	function CalculatorModel(){
+		var _basic = 0
+			, _hra = 0
+			, _da = 0
+			, _taxPercent = 0
+			, _salary = 0
+			, _subscribers = {};
+
+		this.addSubscriber = function(attrName, callbackFn){
+			if (typeof _subscribers[attrName] === "undefined")
+				_subscribers[attrName] = [];
+			_subscribers[attrName].push(callbackFn);
+		};
+		function triggerChange(attrName){
+			var _attrChangeSubscribers = _subscribers[attrName];
+			for(var i=0;i<_attrChangeSubscribers.length;i++){
+				(function(index){
+					setTimeout(function(){
+						_attrChangeSubscribers[index]();	
+					});
+				})(i);
+			}
+		}
+		this.basic = function(val){
+			if (typeof val === "undefined") return _basic;
+			_basic = val;
+			triggerChange('basic');
+		};
+		this.hra = function(val){
+			if (typeof val === "undefined") return _hra;
+			_hra = val;
+			triggerChange('hra');
+		};
+		this.da = function(val){
+			if (typeof val === "undefined") return _da;
+			_da = val;
+			triggerChange('da');
+		};
+		this.taxPercent = function(val){
+			if (typeof val === "undefined") return _taxPercent;
+			_taxPercent = val;
+			triggerChange('taxPercent');
+		};
+
+		this.salary = function(){
+			return _salary;
+		}
+
+		this.calculate = function(){
+			var net = this.basic() + this.hra() + this.da();
+			var tax = net * (this.taxPercent() / 100);
+			var gross = net - tax;
+			_salary = gross;
+			triggerChange('salary');
+		}
+	}
+
+	window.addEventListener("DOMContentLoaded",init);
+	var txtBasic,
+		txtHra,
+		txtDa,
+		rangeTax,
+		spanTax,
+		btnCalculate,
+		divResult,
+		calculator;
+
+	function init(){
+		calculator = new CalculatorModel();
+		txtBasic = document.getElementById("txtBasic");
+		txtDa = document.getElementById("txtDa");
+		txtHra = document.getElementById("txtHra");
+		rangeTax = document.getElementById("rangeTax");
+		spanTax = document.getElementById("spanTax");
+		btnCalculate = document.getElementById("btnCalculate");
+		divResult = document.getElementById("divResult");
+
+		btnCalculate.addEventListener("click",onBtnCalculateClick);
+		txtBasic.addEventListener("change",onTxtBasicChange);
+		txtHra.addEventListener("change",onTxtHraChange);
+		txtDa.addEventListener("change",onTxtDaChange);
+		rangeTax.addEventListener("change",onRangeTaxChange);
+
+		calculator.addSubscriber('salary',onSalaryChange);
+		calculator.addSubscriber('basic',onBasicChange);
+		calculator.addSubscriber('hra',onHraChange);
+		calculator.addSubscriber('da',onDaChange);
+		calculator.addSubscriber('taxPercent',onTaxPercentChange);
+	}
+	/* Model change notification subscriptions */
+	function onSalaryChange(){
+		divResult.innerHTML = "Rs." + calculator.salary();
+	}
+	function onBasicChange(){
+		txtBasic.value = calculator.basic();
+	}
+	function onHraChange(){
+		txtHra.value = calculator.hra();
+	}
+	function onDaChange(){
+		txtDa.value = calculator.da();
+	}
+	function onTaxPercentChange(){
+		rangeTax.value = calculator.taxPercent();
+		spanTax.innerText = calculator.taxPercent();
+	}
+	/* End of Model change notification subscriptions */
+
+	/* View change notification subscriptions */
+	function onTxtBasicChange(){
+		calculator.basic(parseFloat(txtBasic.value));
+	}
+	function onTxtHraChange(){
+		calculator.hra(parseFloat(txtHra.value));
+	}
+	function onTxtDaChange(){
+		calculator.da(parseFloat(txtDa.value));
+	}
+	function onRangeTaxChange(){
+		calculator.taxPercent(parseFloat(rangeTax.value));
+		//spanTax.innerText = rangeTax.value;
+	}
+	/* End of View change notification subscriptions */
+	function onBtnCalculateClick(){
+		 calculator.calculate();
+	}
+
+	</script>
+</head>
+<body>
+<div class="content">
+	<div><label for="txtBasic">Basic :</label><input type="text" name="" id="txtBasic"></div>
+	<div><label for="txtHra">Hra :</label><input type="text" name="" id="txtHra"></div>
+	<div><label for="txtDa">Da :</label><input type="text" name="" id="txtDa"></div>
+	<div><label for="txtTax">Tax :</label><input type="range" min="0" max="50" value="0" name="" id="rangeTax"><span id="spanTax">[Tax%]</span></div>
+	<input type="button" value="Calculate" id="btnCalculate">
+	<div id="divResult">[Salary]</div>
+</div>
+	
+</body>
+</html>
